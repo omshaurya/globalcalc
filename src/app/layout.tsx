@@ -92,20 +92,21 @@ const websiteSchema = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />
-        <script dangerouslySetInnerHTML={{
+      <head suppressHydrationWarning>
+        {/* Consent Manager — must load first to gate all other scripts */}
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+        <script suppressHydrationWarning type="text/javascript" data-cmp-ab="1" src="https://cdn.consentmanager.net/delivery/autoblocking/087c94bc02eba.js" data-cmp-host="d.delivery.consentmanager.net" data-cmp-cdn="cdn.consentmanager.net" data-cmp-codesrc="16" />
+        {/* Google Analytics */}
+        <script suppressHydrationWarning async src="https://www.googletagmanager.com/gtag/js?id=G-BEPJNBT2LC" />
+        <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-BEPJNBT2LC');` }} />
+        {/* Structured data */}
+        <script suppressHydrationWarning type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
+        <script suppressHydrationWarning type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />
+        {/* Theme init */}
+        <script suppressHydrationWarning dangerouslySetInnerHTML={{
           __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark');}}catch(e){}})();`
         }} />
       </head>
-      <Script src="https://www.googletagmanager.com/gtag/js?id=G-BEPJNBT2LC" strategy="afterInteractive" />
-      <Script id="gtag-init" strategy="afterInteractive">{`
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-BEPJNBT2LC');
-      `}</Script>
       <body className={`${inter.variable} ${geistMono.variable} antialiased`}>
         <CustomCursor />
         <ToastProvider>
