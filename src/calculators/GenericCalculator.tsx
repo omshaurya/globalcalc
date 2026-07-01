@@ -181,7 +181,7 @@ function loanConfig(name: string, amountDefault: number, rateDefault: number, ye
       { type: "info" as const, title: "Loan Summary", body: `At ${rate}% over ${years} years, interest makes up a significant portion of your total payments. Paying extra toward principal reduces this substantially.` },
       ...(extraField > 0 ? [{ type: "success" as const, title: "Extra Payments Save Money", body: `Adding ${formatCurrency(extraField, currency)}/month toward principal shortens your loan term and cuts total interest paid.` }] : [{ type: "warning" as const, title: "Consider Extra Payments", body: "Even small additional monthly payments toward principal can save thousands in interest and years off your loan." }]),
     ],
-    formulas: [{ name: "Loan Payment (Amortization)", formula: "PMT = P × r(1+r)^n / [(1+r)^n − 1]", variables: [{ symbol: "P", meaning: "Loan principal" }, { symbol: "r", meaning: "Monthly interest rate" }, { symbol: "n", meaning: "Total number of payments" }], example: `${formatCurrency(amountDefault, "USD")} at ${rateDefault}% for ${yearsDefault} years` }],
+    formulas: [{ name: "Loan Payment (Amortization)", formula: "PMT = P × r(1+r)^n / [(1+r)^n − 1]", variables: [{ symbol: "P", meaning: "Loan principal" }, { symbol: "r", meaning: "Monthly interest rate" }, { symbol: "n", meaning: "Total number of payments" }], example: `${amountDefault.toLocaleString()} at ${rateDefault}% for ${yearsDefault} years` }],
     faqs: [
       { q: "How is my monthly payment calculated?", a: "Lenders use the amortization formula, which spreads principal and interest across equal payments so the loan is fully paid off by the end of the term." },
       { q: "Should I make extra payments?", a: "Yes, if there's no prepayment penalty. Extra payments go directly to principal, reducing the interest charged on remaining balance and shortening your payoff timeline." },
@@ -1105,7 +1105,7 @@ function getConfig(id: string): CalculatorConfig {
         const maxPI = maxHousingPayment - extraField;
         const r = rate / 100 / 12;
         const n = 30 * 12;
-        const maxLoan = maxPI > 0 ? (maxPI * (Math.pow(1 + r, n) - 1)) / (r * Math.pow(1 + r, n)) : 0;
+        const maxLoan = maxPI > 0 && r > 0 ? (maxPI * (Math.pow(1 + r, n) - 1)) / (r * Math.pow(1 + r, n)) : maxPI > 0 && r === 0 ? maxPI * n : 0;
         const maxHomePrice = maxLoan + amount;
         return { metrics: [
           { label: "Max Home Price", value: formatCurrency(maxHomePrice, currency), icon: "🏠" },

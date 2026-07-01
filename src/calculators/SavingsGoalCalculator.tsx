@@ -42,7 +42,8 @@ export default function SavingsGoalCalculator({ meta }: Props) {
   // Projected value at goalYears with current contributions
   const projectedAtGoal = useMemo(() => {
     const n = goalYears * 12;
-    return currentSavings * Math.pow(1 + r, n) + monthlyContribution * (Math.pow(1 + r, n) - 1) / r;
+    const growth = r === 0 ? monthlyContribution * n : monthlyContribution * (Math.pow(1 + r, n) - 1) / r;
+    return currentSavings * Math.pow(1 + r, n) + growth;
   }, [currentSavings, r, monthlyContribution, goalYears]);
 
   const willMeetGoal = projectedAtGoal >= goalAmount;

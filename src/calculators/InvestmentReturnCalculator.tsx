@@ -61,7 +61,7 @@ export default function InvestmentReturnCalculator({ meta }: Props) {
     const totalGain = finalValue - totalContributions;
     const afterTaxGain = totalGain * (1 - taxRate / 100);
     const afterTaxValue = totalContributions + afterTaxGain;
-    const cagr = Math.pow(finalValue / initialInvestment, 1 / years) - 1;
+    const cagr = initialInvestment > 0 ? Math.pow(finalValue / initialInvestment, 1 / years) - 1 : 0;
     const realValue = finalValue / Math.pow(1 + inf, years);
 
     return { yearData, finalValue, totalContributions, totalGain, afterTaxValue, totalDividends, cagr, realValue };

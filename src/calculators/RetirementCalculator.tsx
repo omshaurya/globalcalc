@@ -53,7 +53,8 @@ export default function RetirementCalculator({ meta }: Props) {
 
   const corpusNeeded = useMemo(() => {
     const annualShortfall = inflationAdjExpenses - socialSecurity * 12;
-    return Math.max(0, annualShortfall / (retirementReturn / 100));
+    const rate = Math.max(0.001, retirementReturn / 100);
+    return Math.max(0, annualShortfall / rate);
   }, [inflationAdjExpenses, socialSecurity, retirementReturn]);
 
   const surplusDeficit = corpusAtRetirement - corpusNeeded;
@@ -95,7 +96,7 @@ export default function RetirementCalculator({ meta }: Props) {
     list.push({ type: "info", title: "Inflation Impact", body: `${formatCurrency(annualExpenses, currency)} today = ${formatCurrency(inflationAdjExpenses, currency)}/year at retirement after ${inflationRate}% inflation for ${yearsToRetire} years.` });
     if (monte.successRate < 85) list.push({ type: "warning", title: `${monte.successRate.toFixed(0)}% Monte Carlo Success Rate`, body: "Consider increasing savings or reducing expected expenses to improve your plan's reliability across different market scenarios." });
     else list.push({ type: "success", title: `${monte.successRate.toFixed(0)}% Monte Carlo Success Rate`, body: "Your plan has a strong probability of success across 500 simulated market scenarios. Well-positioned for retirement." });
-    if (socialSecurity > 0) list.push({ type: "info", title: "Social Security Benefit", body: `Your ${formatCurrency(socialSecurity, currency)}/month Social Security income reduces the required portfolio by ${formatCurrency(socialSecurity * 12 / (retirementReturn / 100), currency)}.` });
+    if (socialSecurity > 0 && retirementReturn > 0) list.push({ type: "info", title: "Social Security Benefit", body: `Your ${formatCurrency(socialSecurity, currency)}/month Social Security income reduces the required portfolio by ${formatCurrency(socialSecurity * 12 / (retirementReturn / 100), currency)}.` });
     return list;
   }, [onTrack, surplusDeficit, corpusAtRetirement, corpusNeeded, yearsToRetire, annualExpenses, inflationAdjExpenses, inflationRate, monte, socialSecurity, retirementReturn, currency]);
 

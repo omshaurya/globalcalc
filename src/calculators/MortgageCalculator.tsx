@@ -50,7 +50,7 @@ export default function MortgageCalculator({ meta }: Props) {
 
   const insights: Insight[] = useMemo(() => {
     const list: Insight[] = [];
-    if (downPct < 20) list.push({ type: "warning", title: "PMI May Be Required", body: `With ${downPct.toFixed(1)}% down payment, lenders typically require Private Mortgage Insurance (PMI), adding $50–$200/month to your costs.` });
+    if (downPct < 20) list.push({ type: "warning", title: "PMI May Be Required", body: `With ${downPct.toFixed(1)}% down payment, lenders typically require Private Mortgage Insurance (PMI), adding ${symbol}50–${symbol}200/month to your costs.` });
     if (annualRate > 7.5) list.push({ type: "warning", title: "High Interest Rate", body: `At ${annualRate}%, a 1-point rate reduction would save ~${formatCurrency((calcEMI(loanAmount, annualRate - 1, termYears * 12) - emi) * -1 * termYears * 12, currency)} over the loan life. Consider buying down the rate if staying long-term.` });
     const interestRatio = totalInterest / loanAmount;
     if (interestRatio > 1) list.push({ type: "info", title: "Total Interest Exceeds Principal", body: `You'll pay ${formatCurrency(totalInterest, currency)} in interest — ${(interestRatio * 100).toFixed(0)}% of the original loan. Extra principal payments can significantly reduce this.` });

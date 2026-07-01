@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
@@ -98,6 +99,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark');}}catch(e){}})();`
         }} />
       </head>
+      <Script src="https://www.googletagmanager.com/gtag/js?id=G-BEPJNBT2LC" strategy="afterInteractive" />
+      <Script id="gtag-init" strategy="afterInteractive">{`
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-BEPJNBT2LC');
+      `}</Script>
       <body className={`${inter.variable} ${geistMono.variable} antialiased`}>
         <CustomCursor />
         <ToastProvider>

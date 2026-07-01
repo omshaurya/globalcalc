@@ -49,14 +49,14 @@ export default function BudgetPlannerCalculator({ meta }: Props) {
 
   const totalExpenses = categories.reduce((s, c) => s + c.value, 0);
   const remaining = income - totalExpenses;
-  const savingsRate = ((savings + investments + Math.max(0, remaining)) / income) * 100;
-  const housingPct = (housing / income) * 100;
+  const savingsRate = income > 0 ? ((savings + investments + Math.max(0, remaining)) / income) * 100 : 0;
+  const housingPct = income > 0 ? (housing / income) * 100 : 0;
   const needsTotal = housing + transportation + food + utilities + insurance + healthcare;
   const wantsTotal = entertainment + personalCare + other;
   const savingsTotal = savings + investments;
-  const needsPct = (needsTotal / income) * 100;
-  const wantsPct = (wantsTotal / income) * 100;
-  const savingsPct = (savingsTotal / income) * 100;
+  const needsPct = income > 0 ? (needsTotal / income) * 100 : 0;
+  const wantsPct = income > 0 ? (wantsTotal / income) * 100 : 0;
+  const savingsPct = income > 0 ? (savingsTotal / income) * 100 : 0;
 
   const budgetRuleData = [
     { category: "Needs (50%)", actual: Math.round(needsPct), target: 50, actualAmt: needsTotal },

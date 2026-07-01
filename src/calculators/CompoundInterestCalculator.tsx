@@ -29,7 +29,7 @@ export default function CompoundInterestCalculator({ meta }: Props) {
     if (additionalMonthly > 0) {
       const r = rate / 100 / 12;
       const n = years * 12;
-      val += additionalMonthly * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
+      val += r === 0 ? additionalMonthly * n : additionalMonthly * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
     }
     return val;
   }, [principal, rate, years, frequency, additionalMonthly]);
@@ -44,7 +44,7 @@ export default function CompoundInterestCalculator({ meta }: Props) {
       if (additionalMonthly > 0 && y > 0) {
         const r = rate / 100 / 12;
         const n = y * 12;
-        val += additionalMonthly * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
+        val += r === 0 ? additionalMonthly * n : additionalMonthly * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
       }
       const invested = principal + additionalMonthly * y * 12;
       data.push({ year: new Date().getFullYear() + y, "Total Value": Math.round(val), "Principal + Contributions": Math.round(invested), "Interest Earned": Math.round(val - invested) });
@@ -52,10 +52,10 @@ export default function CompoundInterestCalculator({ meta }: Props) {
     return data;
   }, [principal, rate, years, frequency, additionalMonthly]);
 
-  const rule72Years = 72 / rate;
+  const rule72Years = rate > 0 ? 72 / rate : Infinity;
 
   const insights: Insight[] = useMemo(() => [
-    { type: "info", title: `Rule of 72: Doubles in ~${rule72Years.toFixed(1)} Years`, body: `At ${rate}% interest, your money doubles approximately every ${rule72Years.toFixed(1)} years. In ${years} years, it doubles roughly ${(years / rule72Years).toFixed(1)} times.` },
+    { type: "info", title: rate > 0 ? `Rule of 72: Doubles in ~${rule72Years.toFixed(1)} Years` : "Rule of 72", body: rate > 0 ? `At ${rate}% interest, your money doubles approximately every ${rule72Years.toFixed(1)} years. In ${years} years, it doubles roughly ${(years / rule72Years).toFixed(1)} times.` : "Enter an interest rate above 0% to see the Rule of 72 doubling time." },
     { type: "success", title: "Interest Earned vs Principal", body: `Your ${formatCurrency(totalInvested, currency)} investment grows by ${formatCurrency(totalInterest, currency)} (${((totalInterest / totalInvested) * 100).toFixed(0)}%) through compounding — money working for you.` },
     { type: "info", title: "Frequency Matters", body: "Daily compounding earns slightly more than monthly or annual. On $10,000 at 8% for 10 years, daily vs annual compounding adds ~$50 — meaningful for very large sums." },
     ...(rate < 5 ? [{ type: "warning" as const, title: "Low Interest Rate", body: "At current rates, inflation may erode your real returns. Consider higher-yielding instruments like equity index funds for long-term wealth building." }] : []),

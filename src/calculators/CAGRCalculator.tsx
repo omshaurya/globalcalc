@@ -37,7 +37,7 @@ export default function CAGRCalculator({ meta }: Props) {
     const rate = mode === "calc-cagr" ? cagrResult : cagrRate;
     return [
       { type: rate > 15 ? "success" : rate > 8 ? "info" : "warning", title: `${formatPercent(rate)} CAGR`, body: `This is a ${rate > 15 ? "exceptional" : rate > 8 ? "solid" : "modest"} return. S&P 500 historical CAGR is ~10% nominal, ~7% real.` },
-      { type: "info", title: "Rule of 72", body: `At ${formatPercent(rate)} CAGR, your money doubles every ${(72 / rate).toFixed(1)} years.` },
+      ...(rate > 0 ? [{ type: "info" as const, title: "Rule of 72", body: `At ${formatPercent(rate)} CAGR, your money doubles every ${(72 / rate).toFixed(1)} years.` }] : []),
     ];
   }, [cagrResult, cagrRate, mode]);
 
